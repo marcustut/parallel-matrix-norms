@@ -1,7 +1,7 @@
 CC=gcc
 
 FLAGS=-O3
-BLAS_FLAGS=-L/opt/homebrew/opt/openblas/lib -I/opt/homebrew/opt/openblas/include -lblas -lm
+BLAS_FLAGS=-L/opt/homebrew/opt/openblas/lib -I/opt/homebrew/opt/openblas/include -lblas -lm -lpthread
 INCLUDE=-Iinclude
 
 BIN_DIR=bin
