@@ -31,9 +31,6 @@ int main(void)
     double norm_serial = norm_of_product_serial(N, A, B);
     double norm_parallel = norm_of_product_parallel(N, A, B);
 
-    printf("norm_serial: %f\n", norm_serial);
-    printf("norm_parallel: %f\n", norm_parallel);
-
     // Compare the two matrices
     if (norm_serial != norm_parallel)
         fprintf(stderr, "[FAILED] %f != %f\n", norm_serial, norm_parallel);

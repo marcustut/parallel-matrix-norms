@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include <cblas.h>
 
 #include "helper.h"
 
@@ -33,7 +32,10 @@ double norm_of_product_serial(int n, double *A, double *B)
         return -1;
     }
 
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, n, n, n, BLAS_ALPHA, A, n, B, n, BLAS_BETA, C, n);
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            for (int k = 0; k < n; k++)
+                C[i * n + j] += A[i * n + k] * B[k * n + j];
 
     double norm = one_norm_serial(n, C);
 

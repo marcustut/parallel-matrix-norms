@@ -10,7 +10,7 @@
 \begin{document}
 
 \begin{center}
-    {\LARGE Parallel matrix norms using Pthreads} \\[0.6cm]
+    {\LARGE Parallel matrix norms using pthreads} \\[0.6cm]
 
     Lee Kai Yang (23205838) \\
     \texttt{\small kai.y.lee@ucdconnect.ie} \\[0.3cm]
@@ -18,8 +18,19 @@
     \small November 12, 2023
 \end{center}
 
+\begin{section}{Introduction}
+ The aim of this experiemnt is to discover the difference between the serial and parallel algorithm for computing matrix norms. The
+ parallel algorithm was imlemented using \textbf{pthreads} and the benchmark was ran on a machine with 8 x Intel(R) Xeon(R) E5-2620 v3 @ 2.40GHz processors.
+ The program uses the number of processors as the number of threads hence the results for parallel algorithm shown in following sections uses 8 threads.
+
+ All the matrix multiplication algorithms used in this experiemnt are written manually without using any third-party dependencies both for
+ the serial algorithm and the parallel algorithm.
+\end{section}
+
 \begin{section}{Dependence of program execution time on matrix size}
- The benchmark was ran on a machine with 8 x Intel(R) Xeon(R) E5-2620 v3 @ 2.40GHz processors.
+ Since the matrix size $n$ must be divisible by the number of threads, the benchmark was ran with $n$ ranging from
+ $128$ to $1792$ with a step of $128$. Figures below show the execution time for the serial and parallel algorithm with
+ increasing matrix size $n$.
 
  \begin{center}
      \begin{minipage}{0.48\linewidth}
@@ -32,42 +43,58 @@
      \end{minipage}
  \end{center}
 
+ From the results above, we can deduce that as matrix size $n$ increases, execution time increases. This is true for both cases because
+ the number of computation needed increases.
+
 \end{section}
 
-\begin{section}{Speedup of blocked algorithms over non-blocked}
- In this section, I will be experimenting with different matrix sizes $n$ and compare the speedup between the blocked and non-blocked matrix multiplication algorithms.
- I will be using \textbf{ATLAS} for the blocked \textit{ijk} algorithm and \textbf{BLAS} for the non-blocking dgemm routine. For each algorithm, I ran $11$ iterations
- with increasing matrix size $n$ from $1024$ to $4096$ with a step of $384$. Table 1, Figure 1 and Figure 2 below shows the result between the blocked and non-blocked algorithm.
+\pagebreak
+
+\begin{section}{Speedup of parallel algorithm over serial algorithm}
+ To further investigate on the speedup of the parallel algorithm over the serial algorithm, Figure 3 below shows the plot of the execution time
+ for the serial algorithm and the parallel algorithm on the same graph. Moreover, Table 1 below includes the execution time for both algorithms
+ for different matrix size $n$.
+
+ \begin{center}
+     \includegraphics*[width=12cm]{images/benchmark_combined.png}
+     \captionof{figure}{Matrix norm benchmark}
+ \end{center}
 
  \begin{center}
      \begin{tabular}{|c | c | c|}
          \hline
-         \textbf{Matrix size (n)} & \textbf{Time taken for non-blocked (ms)} & \textbf{Time taken for blocked (ms)} \\ [0.5ex]
+         \textbf{Matrix size (n)} & \textbf{Time taken for serial (ms)} & \textbf{Time taken for parallel (ms)} \\ [0.5ex]
          \hline
-         1024                     & 239.12                                   & 251.55                               \\
+         128                      & 0.97                                & 10.83                                 \\
          \hline
-         1331                     & 545.80                                   & 280.57                               \\
+         256                      & 5.66                                & 33.25                                 \\
          \hline
-         1638                     & 948.60                                   & 242.28                               \\
+         384                      & 15.36                               & 65.15                                 \\
          \hline
-         1945                     & 1591.63                                  & 250.95                               \\
+         512                      & 34.5                                & 117.55                                \\
          \hline
-         2252                     & 2403.19                                  & 1825.92                              \\
+         640                      & 62.42                               & 196.83                                \\
          \hline
-         2560                     & 3511.97                                  & 1831.08                              \\
+         768                      & 117.13                              & 317.01                                \\
          \hline
-         2867                     & 4900.08                                  & 1828.35                              \\
+         896                      & 169.87                              & 480.37                                \\
          \hline
-         3174                     & 6570.59                                  & 6056.96                              \\
+         1024                     & 240.73                              & 3257.47                               \\
          \hline
-         3481                     & 8719.13                                  & 6078.35                              \\
+         1152                     & 340.48                              & 3223.21                               \\
          \hline
-         3788                     & 11159.21                                 & 6078.67                              \\
+         1280                     & 462.89                              & 6557.70                               \\
          \hline
-         4096                     & 14086.89                                 & 14282.82                             \\ [1ex]
+         1408                     & 608.636                             & 8467.80                               \\ [1ex]
+         \hline
+         1536                     & 778.77                              & 11587.90                              \\ [1ex]
+         \hline
+         1664                     & 985.34                              & 13826.90                              \\ [1ex]
+         \hline
+         1792                     & 1217.72                             & 18577.88                              \\ [1ex]
          \hline
      \end{tabular}
-     \captionof{table}{Time taken for blocked and non-blocked algorithm}
+     \captionof{table}{Time taken for serial and parallel algorithm}
  \end{center}
 
  %  \begin{center}
@@ -84,53 +111,5 @@
  From the results shown above, the average time taken for the non-blocked algorithm is $4970.56$ms and $3546.13$ms for the blocked algorithm.
  The speedup is $40\%$ calculated using the formula: $$\frac{(avg\;time_{blocked} - avg\;time_{non-blocked})}{avg\;time_{non-blocked}} \cdot 100\%$$.
 \end{section}
-
-\begin{section}{Influence of block size on cache utilization and execution time}
- The benchmark was ran on a machine with 8 x Intel(R) Xeon(R) E5-2620 v3 @ 2.40GHz processors but the number of cores is not important in this case,
- since the computation is single threaded. From the output of \textbf{lscpu}, the L1d cache is $32$KB, L1i cache is $32$KB, L2 cache is $256$KB
- and L3 cache is $15360$KB. Since only the L1d cache is storing data, the size of a single block should not exceed $32$KB. The size of a single
- \textit{double} is $8$ bytes, let $b$ = block size, the optimal block size should be:
-
- \begin{align*}
-     b * b * sizeof(double) & = sizeof(cache)                               \\
-     b^2 * sizeof(double)   & = sizeof(cache)                               \\
-     b                      & = \sqrt{\frac{sizeof(cache)}{sizeof(double)}} \\
-     b                      & = \sqrt{\frac{32 * 1024}{8}}                  \\
-     b                      & = 64
- \end{align*}
-
- Since L2 cache is $256$KB, the optimal block size should be:
-
- \begin{align*}
-     b & = \sqrt{\frac{256 * 1024}{8}} \\
-     b & = 181
- \end{align*}
-
- Since L3 cache is $15360$KB, the optimal block size should be:
-
- \begin{align*}
-     b & = \sqrt{\frac{15360 * 1024}{8}} \\
-     b & = 1402
- \end{align*}
-
- I have ran the blocked ijk ATLAS routine with 10 different block sizes including the optimal block sizes calculated above. The results
- are shown in Figure 3 below.
-
- %  \begin{center}
- %      \includegraphics*[]{images/atlas_block_combined.png}
- %      \captionof{figure}{Result of blocked ijk ATLAS routine with different block sizes}
- %  \end{center}
-
- From the results above, we can deduce that as block size increases, execution time decreases. However, there are a few
- block sizes that shown a significant decrease in execution time compared to others which are $64$, $181$ and $1402$.
- The reason being that these block sizes are the optimal block sizes that fits the L1d, L2 and L3 cache respectively. \\
-
- The fastest of them all is the block size $1402$ but the execution time for the first few matrix sizes are zero because
- the block size is larger than the matrix size and therefore the algorithm is not executed. Hence, choosing a suitable
- block size based on the matrix size is equally important as choosing the optimal block size. One of the ways to mitigate
- this issue is to add a check to see if the block size is larger than the matrix size and if it is, set the block size to
- the matrix size.
-\end{section}
-
 
 \end{document}

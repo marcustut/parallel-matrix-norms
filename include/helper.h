@@ -2,7 +2,6 @@
 #define HELPER_H
 
 #include <stdlib.h>
-#include <cblas.h>
 #include <pthread.h>
 
 #if __APPLE__
@@ -19,9 +18,6 @@
 #ifndef MAX
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #endif
-
-#define BLAS_ALPHA 1.0
-#define BLAS_BETA 1.0
 
 double random_number(int min, int max)
 {
