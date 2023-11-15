@@ -12,19 +12,19 @@
 \begin{center}
     {\LARGE Parallel matrix norms using pthreads} \\[0.6cm]
 
-    Lee Kai Yang (23205838) \\
-    \texttt{\small kai.y.lee@ucdconnect.ie} \\[0.3cm]
+    Marcus Lee \\
+    \texttt{\small marcustutorial@hotmail.com} \\[0.3cm]
 
     \small November 12, 2023
 \end{center}
 
 \begin{section}{Introduction}
- The aim of this experiemnt is to discover the difference between the serial and parallel algorithm for computing matrix norms. The
- parallel algorithm was imlemented using \textbf{pthreads} and the benchmark was ran on a machine with 8 x Intel(R) Xeon(R) E5-2620 v3 @ 2.40GHz processors.
+ The aim of this experiemnt is to discover the difference between serial and parallel algorithm for computing matrix norms. The
+ parallel algorithm used in this experiemnt was imlemented using \textbf{pthreads} and the benchmark was ran on a machine with 8 x Intel(R) Xeon(R) E5-2620 v3 @ 2.40GHz processors.
  The program uses the number of processors as the number of threads hence the results for parallel algorithm shown in following sections uses 8 threads.
 
- All the matrix multiplication algorithms used in this experiemnt are written manually without using any third-party dependencies both for
- the serial algorithm and the parallel algorithm.
+ All the matrix multiplication algorithms used in this experiemnt were manually written without using any third-party dependencies both for
+ the serial and the parallel algorithm.
 \end{section}
 
 \begin{section}{Dependence of program execution time on matrix size}
@@ -35,11 +35,11 @@
  \begin{center}
      \begin{minipage}{0.48\linewidth}
          \includegraphics*[width=8cm]{images/benchmark_serial.png}
-         \captionof{figure}{Matrix norm using serial algorithm}
+         \captionof{figure}{Matrix norm with serial algorithm}
      \end{minipage}
      \begin{minipage}{0.48\linewidth}
          \includegraphics*[width=8cm]{images/benchmark_parallel.png}
-         \captionof{figure}{Matrix norm using pthreads}
+         \captionof{figure}{Matrix norm with parallel algorithm}
      \end{minipage}
  \end{center}
 
@@ -65,51 +65,45 @@
          \hline
          \textbf{Matrix size (n)} & \textbf{Time taken for serial (ms)} & \textbf{Time taken for parallel (ms)} \\ [0.5ex]
          \hline
-         128                      & 0.97                                & 10.83                                 \\
+         128                      & 2.52                                & 8.88                                  \\
          \hline
-         256                      & 5.66                                & 33.25                                 \\
+         256                      & 37.96                               & 26.85                                 \\
          \hline
-         384                      & 15.36                               & 65.15                                 \\
+         384                      & 117.79                              & 55.16                                 \\
          \hline
-         512                      & 34.5                                & 117.55                                \\
+         512                      & 296.34                              & 75.57                                 \\
          \hline
-         640                      & 62.42                               & 196.83                                \\
+         640                      & 565.67                              & 122.97                                \\
          \hline
-         768                      & 117.13                              & 317.01                                \\
+         768                      & 987.15                              & 201.13                                \\
          \hline
-         896                      & 169.87                              & 480.37                                \\
+         896                      & 1589.10                             & 278.08                                \\
          \hline
-         1024                     & 240.73                              & 3257.47                               \\
+         1024                     & 16625.47                            & 2221.06                               \\
          \hline
-         1152                     & 340.48                              & 3223.21                               \\
+         1152                     & 16897.73                            & 2229.01                               \\
          \hline
-         1280                     & 462.89                              & 6557.70                               \\
+         1280                     & 33874.76                            & 4455.29                               \\
          \hline
-         1408                     & 608.636                             & 8467.80                               \\ [1ex]
+         1408                     & 46162.84                            & 6041.34                               \\ [1ex]
          \hline
-         1536                     & 778.77                              & 11587.90                              \\ [1ex]
+         1536                     & 59080.25                            & 7733.39                               \\ [1ex]
          \hline
-         1664                     & 985.34                              & 13826.90                              \\ [1ex]
+         1664                     & 77936.19                            & 10077.36                              \\ [1ex]
          \hline
-         1792                     & 1217.72                             & 18577.88                              \\ [1ex]
+         1792                     & 96502.45                            & 12328.03                              \\ [1ex]
          \hline
      \end{tabular}
      \captionof{table}{Time taken for serial and parallel algorithm}
  \end{center}
 
- %  \begin{center}
- %      \begin{minipage}{0.48\linewidth}
- %          \includegraphics*[width=8cm]{images/blas_non_block.png}
- %          \captionof{figure}{Non-blocked BLAS routine}
- %      \end{minipage}
- %      \begin{minipage}{0.48\linewidth}
- %          \includegraphics*[width=8cm]{images/atlas_block_1024.png}
- %          \captionof{figure}{Blocked \textit{ijk} ATLAS (block size 1024)}
- %      \end{minipage}
- %  \end{center}
+ From the results shown above, the average time taken for the serial algorithm is $25048.32ms$  and $3275.29ms$ for the parallel algorithm.
+ The speedup is \textbf{86.9\%} calculated using the formula: $$\frac{(avg\;time_{parallel} - avg\;time_{serial})}{avg\;time_{serial}} \cdot 100\%$$.
 
- From the results shown above, the average time taken for the non-blocked algorithm is $4970.56$ms and $3546.13$ms for the blocked algorithm.
- The speedup is $40\%$ calculated using the formula: $$\frac{(avg\;time_{blocked} - avg\;time_{non-blocked})}{avg\;time_{non-blocked}} \cdot 100\%$$.
+ That is a very significant speedup overall however the speedup depends heavily on the matrix size $n$. For example, when $n = 128$ the parallel
+ algorithm is slower than the serial algorithm by \textbf{3.5} times. This is due to the overhead of creating and joining threads which is more
+ expensive than the computation itself. However, when $n = 1792$ the parallel algorithm is faster than the serial algorithm by \textbf{7.8} times. This is
+ because as the input size increases, the overhead of creating and joining threads decreases comparatively.
 \end{section}
 
 \end{document}
