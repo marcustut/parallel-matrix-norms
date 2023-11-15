@@ -16,7 +16,7 @@ test_parallel:
 test_serial:
 	$(CC) $(FLAGS) -o $(BIN_DIR)/test_serial $(TEST_DIR)/test_serial.c $(INCLUDE) $(BLAS_FLAGS)
 
-benchmark: benchmark_serial benchmark_atlas_block
+benchmark: benchmark_serial benchmark_parallel
 
 benchmark_serial:
 	$(CC) $(FLAGS) -o $(BIN_DIR)/benchmark_serial  $(BENCHMARK_DIR)/benchmark_serial.c $(INCLUDE) $(BLAS_FLAGS)

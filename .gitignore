@@ -1,2 +1,10 @@
 .vscode/
 bin/
+.DS_Store
+
+# Latex
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz

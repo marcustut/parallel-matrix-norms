@@ -12,7 +12,7 @@
 int main(void)
 {
     // Use current time as seed for random generator
-    // srand(time(0));
+    srand(time(0));
 
     // Allocate memory for the matrices
     double *A = malloc(N * N * sizeof(double));

@@ -3,7 +3,7 @@
 
 #include "serial.h"
 
-#define N 3
+#define N 1024
 #define NUM_MIN 1
 #define NUM_MAX 10
 #define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)

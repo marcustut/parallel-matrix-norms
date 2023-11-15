@@ -5,8 +5,20 @@
 #include <cblas.h>
 #include <pthread.h>
 
+#if __APPLE__
+#include <sys/sysctl.h>
+#elif __linux__
+#include <sys/sysinfo.h>
+#else
+#error "Unknown compiler"
+#endif
+
+#ifndef MIN
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
 
 #define BLAS_ALPHA 1.0
 #define BLAS_BETA 1.0
@@ -44,6 +56,27 @@ double max_of_array(int n, double *arr)
             max = arr[i];
 
     return max;
+}
+
+// Get number of processors
+int get_nproc()
+{
+// Get number of processors
+#if __APPLE__
+    int mib[2], nproc;
+    size_t len;
+
+    mib[0] = CTL_HW;
+    mib[1] = HW_NCPU;
+    len = sizeof(nproc);
+    sysctl(mib, 2, &nproc, &len, NULL, 0);
+    return nproc;
+#elif __linux__
+    int nproc = get_nprocs();
+    return nproc;
+#else
+#error "Unknown compiler"
+#endif
 }
 
 void print_vector(int n, double *vec)

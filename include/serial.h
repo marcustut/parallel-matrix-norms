@@ -26,7 +26,7 @@ double one_norm_serial(int n, double *A)
 
 double norm_of_product_serial(int n, double *A, double *B)
 {
-    double *C = malloc(n * n * sizeof(double));
+    double *C = calloc(n * n, sizeof(double));
     if (!C)
     {
         fprintf(stderr, "Out of memory, reduce dimension n\n");
