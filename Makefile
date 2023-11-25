@@ -6,7 +6,7 @@ else
 endif
 
 FLAGS=-O3 -fopenmp
-LIB_FLAGS=-lpthread -lomp -L/opt/homebrew/opt/libomp/lib
+LIB_FLAGS=-lpthread -L/opt/homebrew/opt/libomp/lib
 INCLUDE=-Iinclude -I/opt/homebrew/opt/libomp/include
 
 BIN_DIR=bin
