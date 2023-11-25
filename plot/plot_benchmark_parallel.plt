@@ -23,4 +23,4 @@ set style line 1 \
     pointtype 7 pointsize 0.5
 
 #plot data from output data
-plot 'data/benchmark_parallel.dat' with linespoints linestyle 1 lc rgb "web-green" title "Parallel"
+plot 'data/benchmark_parallel_pthread.dat' with linespoints linestyle 1 lc rgb "web-green" title "Parallel"

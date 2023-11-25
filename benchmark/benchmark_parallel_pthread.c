@@ -50,17 +50,17 @@ int main(void)
 
     // Get number of processors on the system
     int nproc = get_nproc();
-    printf("Running benchmark_parallel on %d threads.\n", nproc);
+    printf("Running benchmark_parallel_pthread on %d threads.\n", nproc);
 
     result results[ITERATIONS];
     for (int i = 0; i < ITERATIONS; i++)
     {
         results[i] = run((i + 1) * nproc * nproc * 2);
-        printf("[PARALLEL] Matrix norm for matrix %d x %d took %fs\n", results[i].n, results[i].n, results[i].elapsed_s);
+        printf("[PARALLEL_PTHREAD] Matrix norm for matrix %d x %d took %fs\n", results[i].n, results[i].n, results[i].elapsed_s);
     }
 
     char path[256];
-    snprintf(path, sizeof(path), "./data/benchmark_parallel.dat");
+    snprintf(path, sizeof(path), "./data/benchmark_parallel_pthread.dat");
 
     export_results(results, ITERATIONS, path);
 

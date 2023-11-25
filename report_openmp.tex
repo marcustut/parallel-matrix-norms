@@ -1,0 +1,109 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry} 
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{mathtools}
+\usepackage{titlesec}
+
+\titleformat*{\section}{\large\bfseries}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE Parallel matrix norms using OpenMP} \\[0.6cm]
+
+    Marcus Lee \\
+    \texttt{\small marcustutorial@hotmail.com} \\[0.3cm]
+
+    \small November 25, 2023
+\end{center}
+
+\begin{section}{Introduction}
+ The aim of this experiemnt is to discover the difference between serial and parallel algorithm for computing matrix norms. The
+ parallel algorithm used in this experiemnt was imlemented using \textbf{OpenMP} and the benchmark was ran on a machine with 8 x Intel(R) Xeon(R) E5-2620 v3 @ 2.40GHz processors.
+ The program uses the number of processors as the number of threads hence the results for parallel algorithm shown in following sections uses 8 threads.
+
+ All the matrix multiplication algorithms used in this experiemnt were manually written without using any third-party dependencies both for
+ the serial and the parallel algorithm.
+\end{section}
+
+\begin{section}{Dependence of program execution time on matrix size}
+ Since the matrix size $n$ must be divisible by the number of threads, the benchmark was ran with $n$ ranging from
+ $128$ to $1792$ with a step of $128$. Figures below show the execution time for the serial and parallel algorithm with
+ increasing matrix size $n$.
+
+ \begin{center}
+     \begin{minipage}{0.48\linewidth}
+         \includegraphics*[width=8cm]{images/benchmark_serial.png}
+         \captionof{figure}{Matrix norm with serial algorithm}
+     \end{minipage}
+     \begin{minipage}{0.48\linewidth}
+         \includegraphics*[width=8cm]{images/benchmark_parallel_openmp.png}
+         \captionof{figure}{Matrix norm with parallel algorithm}
+     \end{minipage}
+ \end{center}
+
+ From the results above, we can deduce that as matrix size $n$ increases, execution time increases. This is true for both cases because
+ the number of computation needed increases.
+
+\end{section}
+
+\pagebreak
+
+\begin{section}{Speedup of parallel algorithm over serial algorithm}
+ To further investigate on the speedup of the parallel algorithm over the serial algorithm, Figure 3 below shows the plot of the execution time
+ for the serial algorithm and the parallel algorithm on the same graph. Moreover, Table 1 below includes the execution time for both algorithms
+ for different matrix size $n$.
+
+ \begin{center}
+     \includegraphics*[width=12cm]{images/benchmark_combined.png}
+     \captionof{figure}{Matrix norm benchmark}
+ \end{center}
+
+ \begin{center}
+     \begin{tabular}{|c | c | c|}
+         \hline
+         \textbf{Matrix size (n)} & \textbf{Time taken for serial (ms)} & \textbf{Time taken for parallel (ms)} \\ [0.5ex]
+         \hline
+         128                      & 2.52                                & 8.88                                  \\
+         \hline
+         256                      & 37.96                               & 26.85                                 \\
+         \hline
+         384                      & 117.79                              & 55.16                                 \\
+         \hline
+         512                      & 296.34                              & 75.57                                 \\
+         \hline
+         640                      & 565.67                              & 122.97                                \\
+         \hline
+         768                      & 987.15                              & 201.13                                \\
+         \hline
+         896                      & 1589.10                             & 278.08                                \\
+         \hline
+         1024                     & 16625.47                            & 2221.06                               \\
+         \hline
+         1152                     & 16897.73                            & 2229.01                               \\
+         \hline
+         1280                     & 33874.76                            & 4455.29                               \\
+         \hline
+         1408                     & 46162.84                            & 6041.34                               \\ [1ex]
+         \hline
+         1536                     & 59080.25                            & 7733.39                               \\ [1ex]
+         \hline
+         1664                     & 77936.19                            & 10077.36                              \\ [1ex]
+         \hline
+         1792                     & 96502.45                            & 12328.03                              \\ [1ex]
+         \hline
+     \end{tabular}
+     \captionof{table}{Time taken for serial and parallel algorithm}
+ \end{center}
+
+ From the results shown above, the average time taken for the serial algorithm is $25048.32ms$  and $3275.29ms$ for the parallel algorithm.
+ The speedup is \textbf{86.9\%} calculated using the formula: $$\frac{(avg\;time_{parallel} - avg\;time_{serial})}{avg\;time_{serial}} \cdot 100\%$$.
+
+ That is a very significant speedup overall however the speedup depends heavily on the matrix size $n$. For example, when $n = 128$ the parallel
+ algorithm is slower than the serial algorithm by \textbf{3.5} times. This is due to the overhead of creating and joining threads which is more
+ expensive than the computation itself. However, when $n = 1792$ the parallel algorithm is faster than the serial algorithm by \textbf{7.8} times. This is
+ because as the input size increases, the overhead of creating and joining threads decreases comparatively.
+\end{section}
+
+\end{document}

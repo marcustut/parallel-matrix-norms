@@ -2,10 +2,10 @@
 set terminal png
 
 # save file
-set output 'images/benchmark_combined.png'
+set output 'images/benchmark_parallel_openmp.png'
 
 # graph title
-set title 'Matrix norms (serial vs parallel)'
+set title 'Matrix norms (parallel)'
 
 # y-axis grid
 set grid y
@@ -23,5 +23,4 @@ set style line 1 \
     pointtype 7 pointsize 0.5
 
 #plot data from output data
-plot 'data/benchmark_serial.dat' with linespoints linestyle 1 lc rgb "web-blue" title "Serial", \
-     'data/benchmark_parallel_openmp.dat' with linespoints linestyle 1 lc rgb "web-green" title "Parallel"
+plot 'data/benchmark_parallel_openmp.dat' with linespoints linestyle 1 lc rgb "web-green" title "Parallel"
