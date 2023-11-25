@@ -1,8 +1,13 @@
-CC=gcc
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	CC=gcc-13
+else
+	CC=gcc
+endif
 
-FLAGS=-O3
-LIB_FLAGS=-lpthread
-INCLUDE=-Iinclude
+FLAGS=-O3 -fopenmp
+LIB_FLAGS=-lpthread -lomp -L/opt/homebrew/opt/libomp/lib
+INCLUDE=-Iinclude -I/opt/homebrew/opt/libomp/include
 
 BIN_DIR=bin
 TEST_DIR=tests

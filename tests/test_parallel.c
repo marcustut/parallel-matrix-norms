@@ -30,10 +30,13 @@ int main(void)
     // Run matrix multiplication and norm
     double norm_serial = norm_of_product_serial(N, A, B);
     double norm_parallel = norm_of_product_parallel(N, A, B);
+    double norm_parallel_omp = norm_of_product_parallel_omp(N, A, B);
 
-    // Compare the two matrices
+    // Compare the two norms
     if (norm_serial != norm_parallel)
         fprintf(stderr, "[FAILED] %f != %f\n", norm_serial, norm_parallel);
+    else if (norm_serial != norm_parallel_omp)
+        fprintf(stderr, "[FAILED] %f != %f\n", norm_serial, norm_parallel_omp);
     else
         printf("[PASSED] %s\n", __FILENAME__);
 

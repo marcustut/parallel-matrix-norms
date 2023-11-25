@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <pthread.h>
+#include <omp.h>
 
 #include "helper.h"
 
@@ -75,6 +76,26 @@ double one_norm_parallel(int n, double *A)
     }
 
     // Since one-norm is the maximum column sum, so return the maximum
+    return max_of_array(n, sums);
+}
+
+double one_norm_parallel_omp(int n, double *A)
+{
+    if (n <= 0)
+        return 0.0;
+
+    // Make an array for each column's absolute sum.
+    double sums[n];
+    for (int i = 0; i < n; i++)
+        sums[i] = 0;
+
+    omp_set_num_threads(get_nproc());
+#pragma omp parallel for
+    for (int i = 0; i < n; i++)
+#pragma omp critical
+        for (int j = 0; j < n; j++)
+            sums[j] += fabs(A[i * n + j]);
+
     return max_of_array(n, sums);
 }
 
@@ -164,6 +185,51 @@ double norm_of_product_parallel(int n, double *A, double *B)
 
     // Compute the one-norm for C
     double norm = one_norm_parallel(n, C);
+
+    free(C);
+
+    return norm;
+}
+
+double norm_of_product_parallel_omp(int n, double *A, double *B)
+{
+    int num_threads = get_nproc();
+
+    if (n % num_threads != 0)
+    {
+        fprintf(stderr, "matrix size %d must be a multiple of num of threads %d\n", n, num_threads);
+        exit(1);
+    }
+
+    // Allocate memory for the resulting matrix of A * B.
+    double *C = calloc(n * n, sizeof(double));
+    if (!C)
+    {
+        fprintf(stderr, "Out of memory, reduce dimension n\n");
+        exit(1);
+    }
+
+    // Set number of threads for OpenMP to use
+    omp_set_num_threads(num_threads);
+
+#pragma omp parallel shared(A, B, C, num_threads, n)
+    {
+        int i = omp_get_thread_num();
+        int partition_size = n / num_threads;
+        int col_start = i * partition_size;
+        int col_end = (i + 1) * partition_size;
+
+        for (int j = col_start; j < col_end; ++j)
+            for (int i = 0; i < n; ++i)
+            {
+                double sum = 0.0;
+                for (int k = 0; k < n; ++k)
+                    sum += A[i * n + k] * B[k * n + j];
+                C[i * n + j] = sum;
+            }
+    }
+
+    double norm = one_norm_parallel_omp(n, C);
 
     free(C);
 
