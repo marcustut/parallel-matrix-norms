@@ -19,17 +19,18 @@
 \end{center}
 
 \begin{section}{Introduction}
- The aim of this experiemnt is to discover the difference between serial and parallel algorithm for computing matrix norms. The
- parallel algorithm used in this experiemnt was imlemented using \textbf{OpenMP} and the benchmark was ran on a machine with 8 x Intel(R) Xeon(R) E5-2620 v3 @ 2.40GHz processors.
- The program uses the number of processors as the number of threads hence the results for parallel algorithm shown in following sections uses 8 threads.
+ The aim of this experiment is to discover the difference between serial and parallel algorithm for computing matrix norms. The
+ parallel algorithm used in this experiemnt was imlemented using \textbf{OpenMP} and the benchmark was ran on a Apple Silicon M1 processors with 8 CPU cores.
+ In section 2 and 3, the program uses the number of processors as the number of threads hence the results for parallel algorithm shown uses 8 threads.
+ In section 4, we will discover how increasing the number of threads impact on the execution time.
 
- All the matrix multiplication algorithms used in this experiemnt were manually written without using any third-party dependencies both for
+ All the matrix multiplication algorithms used in this experiment were manually written without using any third-party dependencies both for
  the serial and the parallel algorithm.
 \end{section}
 
 \begin{section}{Dependence of program execution time on matrix size}
  Since the matrix size $n$ must be divisible by the number of threads, the benchmark was ran with $n$ ranging from
- $128$ to $1792$ with a step of $128$. Figures below show the execution time for the serial and parallel algorithm with
+ $256$ to $4096$ with a step of $256$. Figures below show the execution time for the serial and parallel algorithm with
  increasing matrix size $n$.
 
  \begin{center}
@@ -65,45 +66,66 @@
          \hline
          \textbf{Matrix size (n)} & \textbf{Time taken for serial (ms)} & \textbf{Time taken for parallel (ms)} \\ [0.5ex]
          \hline
-         128                      & 2.52                                & 8.88                                  \\
+         256                      & 48.62                               & 8.54                                  \\
          \hline
-         256                      & 37.96                               & 26.85                                 \\
+         512                      & 173.62                              & 45.76                                 \\
          \hline
-         384                      & 117.79                              & 55.16                                 \\
+         758                      & 566.35                              & 107.89                                \\
          \hline
-         512                      & 296.34                              & 75.57                                 \\
+         1024                     & 1407.65                             & 948.70                                \\
          \hline
-         640                      & 565.67                              & 122.97                                \\
+         1280                     & 2632.17                             & 528.31                                \\
          \hline
-         768                      & 987.15                              & 201.13                                \\
+         1536                     & 4889.38                             & 1753.68                               \\
          \hline
-         896                      & 1589.10                             & 278.08                                \\
+         1792                     & 7963.17                             & 1956.31                               \\
          \hline
-         1024                     & 16625.47                            & 2221.06                               \\
+         2048                     & 26496.56                            & 19573.49                              \\
          \hline
-         1152                     & 16897.73                            & 2229.01                               \\
+         2304                     & 17474.20                            & 4640.64                               \\
          \hline
-         1280                     & 33874.76                            & 4455.29                               \\
+         2560                     & 28872.98                            & 22779.53                              \\
          \hline
-         1408                     & 46162.84                            & 6041.34                               \\ [1ex]
+         2816                     & 32588.44                            & 10419.45                              \\
          \hline
-         1536                     & 59080.25                            & 7733.39                               \\ [1ex]
+         3072                     & 93145.27                            & 70182.88                              \\ [1ex]
          \hline
-         1664                     & 77936.19                            & 10077.36                              \\ [1ex]
+         3328                     & 87606.52                            & 28659.00                              \\ [1ex]
          \hline
-         1792                     & 96502.45                            & 12328.03                              \\ [1ex]
+         3584                     & 160394.68                           & 101793.75                             \\ [1ex]
+         \hline
+         3840                     & 181057.62                           & 60536.71                              \\ [1ex]
+         \hline
+         4096                     & 268178.54                           & 176223.93                             \\ [1ex]
          \hline
      \end{tabular}
      \captionof{table}{Time taken for serial and parallel algorithm}
  \end{center}
 
- From the results shown above, the average time taken for the serial algorithm is $25048.32ms$  and $3275.29ms$ for the parallel algorithm.
- The speedup is \textbf{86.9\%} calculated using the formula: $$\frac{(avg\;time_{parallel} - avg\;time_{serial})}{avg\;time_{serial}} \cdot 100\%$$.
+ From the results shown above, the average time taken for the serial algorithm is $57093.49ms$  and $31259.91ms$ for the parallel algorithm.
+ The speedup is \textbf{45.25\%} calculated using the formula: $$\frac{|avg\;time_{parallel} - avg\;time_{serial}|}{avg\;time_{serial}} \cdot 100\%$$.
 
- That is a very significant speedup overall however the speedup depends heavily on the matrix size $n$. For example, when $n = 128$ the parallel
- algorithm is slower than the serial algorithm by \textbf{3.5} times. This is due to the overhead of creating and joining threads which is more
- expensive than the computation itself. However, when $n = 1792$ the parallel algorithm is faster than the serial algorithm by \textbf{7.8} times. This is
- because as the input size increases, the overhead of creating and joining threads decreases comparatively.
+ That might not seem like a very bizarre speedup from the percentage but it still makes a big difference with an average of extra \textbf{25.83s} of overhead while using the serial algorithm.
+ That said, the speedup depends heavily on the matrix size $n$. For example, when $n = 256$ the parallel
+ algorithm is faster than the serial algorithm by \textbf{6} times. However, when $n = 2048$ the parallel algorithm is only faster than the serial algorithm by \textbf{1.35} times.
+\end{section}
+
+\begin{section}{Increasing number of threads}
+ To investigate out how different number of threads affect the execution time, I ran the parallel algorithms with different number of threads and plotted the combined graph below.
+ Note that to change the number of threads with OpenMP, just run the binary with an extra \texttt{OMP\_NUM\_THREADS} environment variable.
+
+ \begin{center}
+     \includegraphics*[width=12cm]{images/benchmark_combined_openmp.png}
+     \captionof{figure}{Matrix norm benchmark with different number of threads}
+ \end{center}
+
+ From the figure above, we can see that there is still justifiable speedup from increasing the number of threads from 4 to 8 but after 8 threads,
+ the speedup in execution time is basically negligible. One possible cause for this
+ is the bottleneck of thread synchronisation using the \texttt{\#pragma omp critical} macro in the calculation of matrix norm. The code
+ for this can be found in the source \texttt{include/parallel.h} line 95. The reason being this region is mutual exclusive and only accessible
+ by one thread at a time hence no matter how many number of threads we increase, the extra threads will be blocked here waiting for their turn
+ to enter the critical region.
+
 \end{section}
 
 \end{document}

@@ -79,7 +79,7 @@ double one_norm_parallel(int n, double *A)
     return max_of_array(n, sums);
 }
 
-double one_norm_parallel_omp(int n, double *A)
+double one_norm_parallel_omp(int n, double *A, int *num_threads)
 {
     if (n <= 0)
         return 0.0;
@@ -89,7 +89,7 @@ double one_norm_parallel_omp(int n, double *A)
     for (int i = 0; i < n; i++)
         sums[i] = 0;
 
-    omp_set_num_threads(get_nproc());
+    omp_set_num_threads(*num_threads);
 #pragma omp parallel for
     for (int i = 0; i < n; i++)
 #pragma omp critical
@@ -191,11 +191,13 @@ double norm_of_product_parallel(int n, double *A, double *B)
     return norm;
 }
 
-double norm_of_product_parallel_omp(int n, double *A, double *B)
+double norm_of_product_parallel_omp(int n, double *A, double *B, int *num_threads)
 {
-    int num_threads = get_nproc();
+    int nproc = get_nproc();
+    if (num_threads == NULL)
+        num_threads = &nproc;
 
-    if (n % num_threads != 0)
+    if (n % *num_threads != 0)
     {
         fprintf(stderr, "matrix size %d must be a multiple of num of threads %d\n", n, num_threads);
         exit(1);
@@ -210,12 +212,12 @@ double norm_of_product_parallel_omp(int n, double *A, double *B)
     }
 
     // Set number of threads for OpenMP to use
-    omp_set_num_threads(num_threads);
+    omp_set_num_threads(*num_threads);
 
 #pragma omp parallel shared(A, B, C, num_threads, n)
     {
         int i = omp_get_thread_num();
-        int partition_size = n / num_threads;
+        int partition_size = n / *num_threads;
         int col_start = i * partition_size;
         int col_end = (i + 1) * partition_size;
 
@@ -229,7 +231,7 @@ double norm_of_product_parallel_omp(int n, double *A, double *B)
             }
     }
 
-    double norm = one_norm_parallel_omp(n, C);
+    double norm = one_norm_parallel_omp(n, C, num_threads);
 
     free(C);
 

@@ -10,6 +10,6 @@ make benchmark
 find bin -name 'benchmark_*' -exec ./{} ';'
 
 # Plot the results
-gnuplot plot/plot_benchmark_serial.plt
-gnuplot plot/plot_benchmark_parallel.plt
-gnuplot plot/plot_benchmark_combined.plt
+# gnuplot plot/plot_benchmark_serial.plt
+# gnuplot plot/plot_benchmark_parallel.plt
+# gnuplot plot/plot_benchmark_combined.plt

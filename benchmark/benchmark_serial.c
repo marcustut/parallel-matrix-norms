@@ -7,7 +7,7 @@
 
 #define MIN_RAND 1
 #define MAX_RAND 1000000
-#define ITERATIONS 14
+#define ITERATIONS 16
 
 result run(int n)
 {
@@ -50,12 +50,12 @@ int main(void)
 
     // Get number of processors on the system
     int nproc = get_nproc();
-    printf("Running benchmark_parallel on %d threads.\n", nproc);
+    printf("Running benchmark_serial.\n");
 
     result results[ITERATIONS];
     for (int i = 0; i < ITERATIONS; i++)
     {
-        results[i] = run((i + 1) * nproc * nproc * 2);
+        results[i] = run((i + 1) * nproc * nproc * 4);
         printf("[SERIAL] Matrix norm for matrix %d x %d took %fs\n", results[i].n, results[i].n, results[i].elapsed_s);
     }
 

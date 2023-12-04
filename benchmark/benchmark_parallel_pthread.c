@@ -7,7 +7,7 @@
 
 #define MIN_RAND 1
 #define MAX_RAND 1000000
-#define ITERATIONS 14
+#define ITERATIONS 16
 
 result run(int n)
 {
