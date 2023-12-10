@@ -35,5 +35,8 @@ benchmark_parallel_pthread:
 benchmark_parallel_openmp:
 	$(CC) $(FLAGS) -o $(BIN_DIR)/benchmark_parallel_openmp  $(BENCHMARK_DIR)/benchmark_parallel_openmp.c $(INCLUDE) $(LIB_FLAGS)
 
+benchmark_parallel_mpi:
+	mpicc -o $(BIN_DIR)/benchmark_parallel_mpi  $(BENCHMARK_DIR)/benchmark_parallel_mpi.c $(INCLUDE) $(LIB_FLAGS)
+
 clean:
 	rm $(BIN_DIR)/*
