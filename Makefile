@@ -29,6 +29,9 @@ benchmark: benchmark_serial benchmark_parallel_pthread benchmark_parallel_openmp
 benchmark_serial:
 	$(CC) $(FLAGS) -o $(BIN_DIR)/benchmark_serial  $(BENCHMARK_DIR)/benchmark_serial.c $(INCLUDE) $(LIB_FLAGS)
 
+benchmark_serial_multiplication:
+	$(CC) $(FLAGS) -o $(BIN_DIR)/benchmark_serial_multiplication  $(BENCHMARK_DIR)/benchmark_serial_multiplication.c $(INCLUDE) $(LIB_FLAGS)
+
 benchmark_parallel_pthread:
 	$(CC) $(FLAGS) -o $(BIN_DIR)/benchmark_parallel_pthread  $(BENCHMARK_DIR)/benchmark_parallel_pthread.c $(INCLUDE) $(LIB_FLAGS)
 
